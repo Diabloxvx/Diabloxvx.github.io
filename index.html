@@ -1,28 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark"> <!-- Default theme is dark -->
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diablo - Software Developer</title>
-
-    <!-- Google Fonts: Inter & Material Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-
-    <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- This div creates the animated glow that follows the cursor -->
     <div class="cursor-glow"></div>
-    
-    <!-- This overlay handles the theme-changing animation -->
     <div id="theme-transition-overlay"></div>
 
-    <header class="glass-ui">
+    <header class="glass-ui-interactive initial-hidden">
         <nav class="container">
             <a href="#" class="brand">Diablo</a>
             <div class="nav-links">
@@ -41,35 +34,33 @@
 
     <main class="container">
         <section class="hero">
-            <img src="https://github.com/user-attachments/assets/6023ce06-0ea2-40a9-ab68-64e52446600f" alt="Diablo's Avatar" class="avatar">
-            <h1>Hi, I'm <span class="highlight">Diablo</span></h1>
-            <p class="subtitle">A college student and passionate developer exploring open-source, Android Rooting, Play Integrity, Loopholes, and AI.</p>
-            <img src="https://komarev.com/ghpvc/?username=diabloxvx&label=PROFILE+VIEWS&color=8A2BE2&style=for-the-badge" alt="Profile Views" class="profile-counter"/>
+            <img src="https://github.com/user-attachments/assets/6023ce06-0ea2-40a9-ab68-64e52446600f
+" alt="Diablo's Avatar" class="avatar initial-hidden">
+            <h1 class="initial-hidden">Hi, I'm <span class="highlight">Diablo</span></h1>
+            <p class="subtitle initial-hidden">A college student and passionate developer exploring open-source, Android Rooting, Play Integrity, Loopholes, and AI.</p>
+            <img src="https://komarev.com/ghpvc/?username=diabloxvx&label=PROFILE+VIEWS&color=8A2BE2&style=for-the-badge" alt="Profile Views" class="profile-counter initial-hidden"/>
         </section>
 
-        <section class="focus-section glass-ui">
+        <section class="focus-section glass-ui-interactive initial-hidden">
             <h2>My Focus Areas</h2>
             <div class="focus-items">
                 <span>Rooting</span>
                 <span>Play Integrity</span>
-                <span>Loopholes</span>
+                <span>KernekSU</span>
                 <span>AI & Gemini</span>
                 <span>Open Source</span>
             </div>
         </section>
 
-        <section class="support-section glass-ui">
+        <section class="support-section glass-ui-interactive initial-hidden">
             <h2>Support My Work</h2>
             <p>If you find my projects useful, consider supporting a college student. Thank you!</p>
             <div class="support-grid">
-                <!-- PayPal Card - Simple Link -->
                 <a href="https://www.paypal.me/DeepakY7518" class="support-card" target="_blank" rel="noopener noreferrer">
                     <span class="material-icons-outlined card-icon">paypal</span>
                     <h4>PayPal</h4>
                     <p>Click to pay</p>
                 </a>
-                
-                <!-- UPI Card - Copies ID and Opens Link -->
                 <a href="upi://pay?pa=deepaky61@fifedral&pn=Diablo&cu=INR" class="support-card copy-and-open" data-copy-value="deepaky61@fifedral">
                     <span class="material-icons-outlined card-icon">payments</span>
                     <h4>UPI</h4>
@@ -80,19 +71,30 @@
         </section>
     </main>
 
-    <footer>
+    <footer class="initial-hidden">
         <p>© 2025 Diablo. Designed with ❤️.</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. Cursor Glow Effect ---
+            // --- 1. Page Load Animation ---
+            const animatedElements = document.querySelectorAll('.initial-hidden');
+            animatedElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.remove('initial-hidden');
+                }, (index + 1) * 150); // Staggered delay
+            });
+
+            // --- 2. Cursor Glow Effect ---
             const cursorGlow = document.querySelector('.cursor-glow');
             document.addEventListener('mousemove', e => {
                 cursorGlow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
             });
+            document.addEventListener('mousedown', () => cursorGlow.classList.add('clicked'));
+            document.addEventListener('mouseup', () => cursorGlow.classList.remove('clicked'));
 
-            // --- 2. Theme Toggle with Center-Glow Animation ---
+
+            // --- 3. Theme Toggle with Center-Glow Animation ---
             const themeToggle = document.getElementById('theme-toggle');
             const transitionOverlay = document.getElementById('theme-transition-overlay');
             const htmlEl = document.documentElement;
@@ -127,31 +129,22 @@
                 }, { once: true });
             });
 
-            // --- 3. Copy AND Open Functionality for Support Cards ---
+            // --- 4. Copy AND Open Functionality for Support Cards ---
             document.querySelectorAll('.copy-and-open').forEach(card => {
                 card.addEventListener('click', (e) => {
-                    e.preventDefault(); // Stop the link from opening immediately
-
+                    e.preventDefault();
                     const textToCopy = card.getAttribute('data-copy-value');
                     const linkToOpen = card.href;
                     const feedbackEl = card.querySelector('.feedback-text');
 
                     navigator.clipboard.writeText(textToCopy).then(() => {
-                        // --- Visual Feedback ---
                         card.classList.add('copied');
                         feedbackEl.textContent = 'Copied!';
-                        
-                        // After a short delay, open the link
-                        setTimeout(() => {
-                           window.open(linkToOpen, '_blank');
-                        }, 500); // 0.5-second delay
-
-                        // Revert the card's state after 2.5 seconds
+                        setTimeout(() => { window.open(linkToOpen, '_blank'); }, 500);
                         setTimeout(() => {
                             card.classList.remove('copied');
                             feedbackEl.textContent = '';
                         }, 2500);
-                        
                     }).catch(err => {
                         console.error('Failed to copy:', err);
                         feedbackEl.textContent = 'Copy failed!';
