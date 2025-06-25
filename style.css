@@ -189,28 +189,34 @@ p { color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem; }
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
     gap: 1.5rem;
 }
+/* AFTER */
 .support-card {
     background-color: color-mix(in srgb, var(--glass-bg), var(--bg-color) 40%);
     border: 1px solid transparent;
     border-radius: var(--border-radius-md);
-    padding: 0.5rem;
-    text-align: center;
+    padding: 1.5rem;
     text-decoration: none;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+
+    /* --- ADD THESE LINES --- */
+    display: flex;              /* Activates Flexbox */
+    flex-direction: column;     /* Stacks items vertically */
+    align-items: center;        /* Centers items horizontally */
+    gap: 0.5rem;                /* <-- This now controls all spacing! */
 }
 .support-card:hover { 
     transform: translateY(-0.35rem); 
     border-color: var(--highlight);
     box-shadow: 0 0 2rem var(--highlight) -1.5rem;
 }
-.card-icon { font-size: 2rem; color: var(--highlight); margin-bottom: 0.75rem; transition: color var(--transition-speed) ease; }
-.support-card h4 { font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.25rem; }
-.support-card p {
-    font-size: 1rem;
-    color: var(--text-secondary);
+.card-icon {
+    font-size: 2.25rem;
+    color: var(--highlight);
+    /* margin-bottom: 0.75rem; */ /* <-- DELETE or COMMENT OUT this line */
+    transition: color var(--transition-speed) ease;
 }
 .feedback-text {
     position: absolute;
