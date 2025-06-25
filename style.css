@@ -2,6 +2,7 @@
 :root {
     --font-family: 'Inter', sans-serif;
     --primary-glow-color: hsl(271, 76%, 53%); /* Vibrant Purple */
+    --success-glow-color: hsl(120, 56%, 43%); /* Green for feedback */
     --border-radius-md: 1rem;
     --border-radius-lg: 1.5rem;
     --transition-speed: 0.3s;
@@ -185,42 +186,57 @@ p { color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem; }
 .support-section p { max-width: 35rem; margin: -1rem auto 2rem auto; }
 .support-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 1.5rem;
 }
 .support-card {
     background-color: color-mix(in srgb, var(--glass-bg), var(--bg-color) 40%);
     border: 1px solid transparent;
     border-radius: var(--border-radius-md);
-    padding: 1.5rem 1rem;
+    padding: 1.5rem;
     text-align: center;
     text-decoration: none;
-    transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    cursor: pointer;
     position: relative;
+    overflow: hidden;
+    transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
-.support-card:hover { transform: translateY(-0.25rem); border-color: var(--highlight); }
-.support-card .material-icons-outlined { font-size: 2rem; color: var(--highlight); margin-bottom: 0.5rem; }
-.support-card h4 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.25rem; }
+.support-card:hover { 
+    transform: translateY(-0.35rem); 
+    border-color: var(--highlight);
+    box-shadow: 0 0 2rem var(--highlight) -1.5rem;
+}
+.card-icon { font-size: 2.25rem; color: var(--highlight); margin-bottom: 0.75rem; transition: color var(--transition-speed) ease; }
+.support-card h4 { font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.25rem; }
 .support-card p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--text-secondary);
-    word-break: break-all;
-    font-family: monospace;
 }
-/* Copy Button Specifics */
-.support-card.copyable { cursor: pointer; }
-.copy-btn {
+.feedback-text {
     position: absolute;
-    top: 0.5rem; right: 0.5rem;
-    background: none; border: none; cursor: pointer;
-    color: var(--text-secondary);
-    border-radius: 50%;
-    width: 2rem; height: 2rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: color var(--transition-speed) ease;
+    bottom: 1.5rem;
+    left: 0;
+    right: 0;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--success-glow-color);
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
-.support-card:hover .copy-btn { color: var(--highlight); }
-.support-card.copied .copy-btn .material-icons-outlined { color: #4CAF50; }
+/* "COPIED" State for the card */
+.support-card.copied {
+    border-color: var(--success-glow-color);
+    box-shadow: 0 0 2rem var(--success-glow-color) -1.5rem;
+}
+.support-card.copied .card-icon {
+    color: var(--success-glow-color);
+}
+.support-card.copied .feedback-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 
 /* --- FOOTER --- */
 footer { text-align: center; padding: 2rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem; }
