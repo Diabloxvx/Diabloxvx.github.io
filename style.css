@@ -193,7 +193,7 @@ p { color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem; }
     background-color: color-mix(in srgb, var(--glass-bg), var(--bg-color) 40%);
     border: 1px solid transparent;
     border-radius: var(--border-radius-md);
-    padding: 1.5rem;
+    padding: 2rem;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
