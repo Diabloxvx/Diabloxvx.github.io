@@ -235,6 +235,11 @@ p { color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem; }
     border-color: var(--success-glow-color);
     box-shadow: 0 0 2rem var(--success-glow-color) -1.5rem;
 }
+.support-card h4 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    /* margin-bottom: 0.25rem; */ /* <-- DELETE or COMMENT OUT this line */
+}
 .support-card.copied .card-icon {
     color: var(--success-glow-color);
 }
