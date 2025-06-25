@@ -62,23 +62,20 @@
             <h2>Support My Work</h2>
             <p>If you find my projects useful, consider supporting a college student. Thank you!</p>
             <div class="support-grid">
+                <!-- PayPal Card - Simple Link -->
                 <a href="https://www.paypal.me/DeepakY7518" class="support-card" target="_blank" rel="noopener noreferrer">
-                    <span class="material-icons-outlined">paypal</span>
+                    <span class="material-icons-outlined card-icon">paypal</span>
                     <h4>PayPal</h4>
-                    <p>DeepakY7518</p>
+                    <p>Click to pay</p>
                 </a>
-                <div class="support-card copyable">
-                    <span class="material-icons-outlined">payments</span>
+                
+                <!-- UPI Card - Copies ID and Opens Link -->
+                <a href="upi://pay?pa=deepaky61@fifedral&pn=Diablo&cu=INR" class="support-card copy-and-open" data-copy-value="deepaky61@fifedral">
+                    <span class="material-icons-outlined card-icon">payments</span>
                     <h4>UPI</h4>
-                    <p id="upi-id">deepaky61@fifedral</p>
-                    <button class="copy-btn" data-copy-target="upi-id" title="Copy UPI ID"></button>
-                </div>
-                 <div class="support-card copyable">
-                    <span class="material-icons-outlined">currency_bitcoin</span>
-                    <h4>Bitcoin</h4>
-                    <p id="btc-address">bc1p...afp8</p> <!-- Shortened for display -->
-                    <button class="copy-btn" data-copy-target="bc1p2tuqflsrhhs25yhlswhatthgj9v2xv9fve4zprtud589up7g97ssaxafp8" title="Copy Bitcoin Address"></button>
-                </div>
+                    <p>Click to copy & pay</p>
+                    <span class="feedback-text"></span>
+                </a>
             </div>
         </section>
     </main>
@@ -106,7 +103,6 @@
                 localStorage.setItem('theme', theme);
             };
             
-            // Apply initial theme
             const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             applyTheme(savedTheme);
 
@@ -114,51 +110,53 @@
                 const currentTheme = htmlEl.getAttribute('data-theme');
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
-                transitionOverlay.classList.remove('active'); // Reset if already active
-                
-                // Set the overlay's background to the new theme's color
+                transitionOverlay.classList.remove('active');
                 const newBgColor = getComputedStyle(htmlEl).getPropertyValue(`--bg-color-${newTheme}`);
                 transitionOverlay.style.backgroundColor = newBgColor;
 
-                // Activate the animation
                 transitionOverlay.classList.add('active');
 
-                // Wait for the animation to cover the screen before changing the theme
                 setTimeout(() => {
                     applyTheme(newTheme);
-                    // Fade out the overlay
                     transitionOverlay.style.opacity = '0';
                 }, 600); 
 
-                // Reset overlay after transition is fully complete
                 transitionOverlay.addEventListener('transitionend', () => {
                     transitionOverlay.classList.remove('active');
                     transitionOverlay.style.opacity = '1';
                 }, { once: true });
             });
 
-            // --- 3. Copy to Clipboard Functionality ---
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.innerHTML = '<span class="material-icons-outlined">content_copy</span>'; // Set initial icon
-                
-                button.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent navigation if inside an <a> tag
-                    e.stopPropagation(); // Stop event bubbling
-                    
-                    const textToCopy = button.getAttribute('data-copy-target').startsWith('bc1p') 
-                        ? button.getAttribute('data-copy-target') 
-                        : document.getElementById(button.getAttribute('data-copy-target')).textContent;
+            // --- 3. Copy AND Open Functionality for Support Cards ---
+            document.querySelectorAll('.copy-and-open').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.preventDefault(); // Stop the link from opening immediately
+
+                    const textToCopy = card.getAttribute('data-copy-value');
+                    const linkToOpen = card.href;
+                    const feedbackEl = card.querySelector('.feedback-text');
 
                     navigator.clipboard.writeText(textToCopy).then(() => {
-                        const originalIcon = button.innerHTML;
-                        button.innerHTML = '<span class="material-icons-outlined">check</span>';
-                        button.parentElement.classList.add('copied');
+                        // --- Visual Feedback ---
+                        card.classList.add('copied');
+                        feedbackEl.textContent = 'Copied!';
                         
+                        // After a short delay, open the link
                         setTimeout(() => {
-                            button.innerHTML = originalIcon;
-                            button.parentElement.classList.remove('copied');
-                        }, 2000);
-                    }).catch(err => console.error('Failed to copy:', err));
+                           window.open(linkToOpen, '_blank');
+                        }, 500); // 0.5-second delay
+
+                        // Revert the card's state after 2.5 seconds
+                        setTimeout(() => {
+                            card.classList.remove('copied');
+                            feedbackEl.textContent = '';
+                        }, 2500);
+                        
+                    }).catch(err => {
+                        console.error('Failed to copy:', err);
+                        feedbackEl.textContent = 'Copy failed!';
+                         setTimeout(() => { feedbackEl.textContent = ''; }, 2000);
+                    });
                 });
             });
         });
