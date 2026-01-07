@@ -6,11 +6,12 @@
     --border-radius-md: 1rem;
     --border-radius-lg: 1.5rem;
     
-    /* Animation Timing & Easing */
-    --transition-speed-fast: 0.2s;
-    --transition-speed-normal: 0.4s;
-    --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+    /* Animation Timing & Easing - Refined for smoothness */
+    --transition-speed-fast: 0.15s;
+    --transition-speed-normal: 0.3s;
+    --ease-out-cubic: cubic-bezier(0.25, 1, 0.5, 1); /* Smoother soft-out */
     --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+    --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Added for interactive pop */
 
     /* Light Theme Palette */
     --bg-color-light: #f0f2f5;
@@ -51,13 +52,16 @@ html[data-theme='dark'] {
 
 /* --- GLOBAL & ANIMATION SETUP --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
     font-family: var(--font-family);
     background-color: var(--bg-color);
     color: var(--text-primary);
     transition: background-color var(--transition-speed-normal) ease, color var(--transition-speed-normal) ease;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
+
 .container {
     max-width: 50rem;
     margin: 0 auto;
@@ -67,8 +71,10 @@ body {
 /* --- PAGE LOAD ANIMATION --- */
 .initial-hidden {
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s var(--ease-out-cubic), transform 0.6s var(--ease-out-cubic);
+    transform: translateY(15px); /* Reduced distance for elegance */
+    transition: 
+        opacity 0.8s var(--ease-out-cubic), 
+        transform 0.8s var(--ease-out-cubic);
 }
 
 /* --- ADVANCED ANIMATION & GLOW EFFECTS --- */
@@ -86,15 +92,30 @@ body {
     to { transform: translate(-50%, -50%) scale(3000); }
 }
 
+/* STICKY BRIGHT CURSOR GLOW */
 .cursor-glow {
-    position: fixed; top: 0; left: 0;
-    width: 30rem; height: 30rem; border-radius: 50%;
-    background: radial-gradient(circle, var(--primary-glow-color) 0%, transparent 60%);
-    opacity: 0.15; pointer-events: none; z-index: -1;
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 25rem; 
+    height: 25rem; 
+    border-radius: 50%;
+    /* Brightened gradient using color-mix for density */
+    background: radial-gradient(circle, 
+        color-mix(in srgb, var(--primary-glow-color), transparent 15%) 0%, 
+        transparent 70%);
+    opacity: 0.4; /* Increased brightness */
+    pointer-events: none; 
+    z-index: -1;
     transform: translate(-50%, -50%);
-    transition: transform 0.2s var(--ease-out-cubic), width 0.3s var(--ease-out-cubic), height 0.3s var(--ease-out-cubic);
+    /* 0.05s duration makes it stick instantly to the cursor */
+    transition: transform 0.05s linear, opacity 0.3s ease;
+    will-change: transform; /* Hardware Acceleration */
 }
-.cursor-glow.clicked { transform: translate(-50%, -50%) scale(0.9); }
+.cursor-glow.clicked { 
+    transform: translate(-50%, -50%) scale(0.7); 
+    opacity: 0.7; 
+}
 
 #theme-transition-overlay {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -105,16 +126,22 @@ body {
     animation: reveal-theme 0.8s var(--ease-in-out-quint) forwards;
 }
 
-/* --- INTERACTIVE GLASS UI --- */
+/* --- INTERACTIVE GLASS UI (SMOOTHER) --- */
 .glass-ui-interactive {
     background: var(--glass-bg);
-    backdrop-filter: blur(1rem);
-    -webkit-backdrop-filter: blur(1rem);
+    backdrop-filter: blur(1.2rem);
+    -webkit-backdrop-filter: blur(1.2rem);
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-lg);
-    box-shadow: 0 0.5rem 2rem rgba(0,0,0,0.1);
+    box-shadow: 0 0.5rem 2rem rgba(0,0,0,0.08);
     position: relative;
-    transition: background var(--transition-speed-normal) ease, border var(--transition-speed-normal) ease, transform var(--transition-speed-normal) var(--ease-out-cubic);
+    /* Transition uses a spring effect for the lift */
+    transition: 
+        background var(--transition-speed-normal) ease, 
+        border-color var(--transition-speed-normal) ease, 
+        transform 0.5s var(--ease-spring),
+        box-shadow 0.5s ease;
+    will-change: transform;
 }
 .glass-ui-interactive::before {
     content: '';
@@ -127,8 +154,9 @@ body {
     transition: opacity var(--transition-speed-normal) var(--ease-out-cubic);
 }
 .glass-ui-interactive:hover {
-    transform: translateY(-5px) scale(1.02);
-    border-color: color-mix(in srgb, var(--highlight) 30%, transparent);
+    transform: translateY(-8px) scale(1.01);
+    border-color: color-mix(in srgb, var(--highlight) 40%, transparent);
+    box-shadow: 0 1rem 2.5rem rgba(0,0,0,0.15);
 }
 .glass-ui-interactive:hover::before { opacity: 0.2; }
 
@@ -141,16 +169,20 @@ header {
 nav { display: flex; align-items: center; gap: 1rem; }
 .brand { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); text-decoration: none; padding: 0.5rem 1rem; }
 .nav-links { display: flex; align-items: center; gap: 0.5rem; }
+
 .nav-icon {
     display: flex; align-items: center; justify-content: center;
     width: 2.5rem; height: 2.5rem; color: var(--text-secondary);
     background: none; border: none; border-radius: 50%; cursor: pointer;
-    transition: color var(--transition-speed-fast) ease, background-color var(--transition-speed-fast) ease, transform var(--transition-speed-normal) var(--ease-out-cubic);
+    transition: 
+        color var(--transition-speed-fast) ease, 
+        background-color var(--transition-speed-fast) ease, 
+        transform 0.4s var(--ease-spring);
 }
 .nav-icon:hover { 
     color: var(--highlight); 
     background-color: rgba(138, 43, 226, 0.1);
-    transform: scale(1.1) rotate(-8deg);
+    transform: scale(1.2) rotate(-12deg);
 }
 .nav-icon svg { width: 1.25rem; height: 1.25rem; fill: currentColor; }
 
@@ -158,7 +190,7 @@ nav { display: flex; align-items: center; gap: 1rem; }
 main { display: flex; flex-direction: column; align-items: center; gap: 2rem; padding: 3rem 0; }
 section { width: 100%; padding: 2rem; text-align: center; }
 h1, h2 { color: var(--text-primary); font-weight: 700; }
-h1 { font-size: clamp(2.5rem, 6vw, 3.5rem); margin-bottom: 0.5rem; }
+h1 { font-size: clamp(2.5rem, 6vw, 3.5rem); margin-bottom: 0.5rem; letter-spacing: -0.02em; }
 h2 { font-size: 1.75rem; margin-bottom: 1.5rem; }
 p { color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem; }
 .highlight { color: var(--highlight); }
@@ -168,7 +200,10 @@ p { color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem; }
 .avatar {
     width: 8rem; height: 8rem; border-radius: 50%; border: 3px solid var(--glass-border);
     margin-bottom: 1.5rem; box-shadow: 0 0 2rem rgba(0,0,0,0.2), 0 0 3rem var(--primary-glow-color) -1.5rem;
+    transition: transform 0.5s var(--ease-spring);
 }
+.avatar:hover { transform: scale(1.05) rotate(3deg); }
+
 .subtitle { max-width: 35rem; margin: 0 auto 1.5rem auto; }
 .profile-counter { border-radius: 0.5rem; }
 
@@ -178,6 +213,11 @@ p { color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem; }
     background-color: rgba(138, 43, 226, 0.1); color: var(--highlight);
     padding: 0.5rem 1rem; border-radius: 999px;
     font-size: 0.9rem; font-weight: 500;
+    transition: transform 0.3s var(--ease-spring), background 0.3s ease;
+}
+.focus-items span:hover {
+    background-color: rgba(138, 43, 226, 0.2);
+    transform: translateY(-3px);
 }
 
 /* --- SUPPORT SECTION --- */
@@ -187,25 +227,28 @@ p { color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem; }
     background-color: color-mix(in srgb, var(--glass-bg), var(--bg-color) 40%);
     border: 1px solid transparent; border-radius: var(--border-radius-md); padding: 1.5rem;
     text-decoration: none; cursor: pointer; position: relative; overflow: hidden;
-    transition: transform var(--transition-speed-normal) var(--ease-out-cubic), border-color var(--transition-speed-normal) ease, box-shadow var(--transition-speed-normal) ease;
+    transition: transform 0.4s var(--ease-spring), border-color var(--transition-speed-normal) ease, box-shadow var(--transition-speed-normal) ease;
     display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
 }
-.support-card:hover { transform: translateY(-0.35rem); border-color: var(--highlight); box-shadow: 0 0 2rem var(--highlight) -1.5rem; }
-.card-icon { font-size: 2.25rem; color: var(--highlight); transition: color var(--transition-speed-normal) ease; }
+.support-card:hover { transform: translateY(-0.5rem); border-color: var(--highlight); box-shadow: 0 0.5rem 2rem var(--highlight) -1.5rem; }
+.card-icon { font-size: 2.25rem; color: var(--highlight); transition: transform 0.3s var(--ease-spring); }
+.support-card:hover .card-icon { transform: scale(1.15); }
+
 .support-card h4 { font-size: 1.25rem; color: var(--text-primary); }
 .support-card p { font-size: 1rem; color: var(--text-secondary); }
+
 .feedback-text {
     position: absolute; bottom: 1.5rem; left: 0; right: 0;
     font-weight: 500; font-size: 1rem; color: var(--success-glow-color);
     opacity: 0; transform: translateY(1rem);
-    transition: opacity var(--transition-speed-normal) var(--ease-out-cubic), transform var(--transition-speed-normal) var(--ease-out-cubic);
+    transition: opacity 0.3s var(--ease-out-cubic), transform 0.3s var(--ease-out-cubic);
 }
 .support-card.copied { animation: pulse-success 1.5s infinite; border-color: var(--success-glow-color); }
 .support-card.copied .card-icon { color: var(--success-glow-color); }
 .support-card.copied .feedback-text { opacity: 1; transform: translateY(0); }
 
 /* --- FOOTER --- */
-footer { text-align: center; padding: 2rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+footer { text-align: center; padding: 4rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem; opacity: 0.8; }
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 600px) {
@@ -213,4 +256,5 @@ footer { text-align: center; padding: 2rem 1.5rem; color: var(--text-secondary);
     .container { padding: 0 1rem; }
     section { padding: 1.5rem; }
     .support-grid { grid-template-columns: 1fr; }
+    .cursor-glow { display: none; } /* Hide glow on mobile to save battery/performance */
 }
